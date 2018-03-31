@@ -1,10 +1,10 @@
 package typedudf
 
+import java.sql.{ Date, Timestamp }
 import org.apache.spark.sql.Row
 import scala.collection.generic.{ CanBuildFrom, IsTraversableLike }
 import shapeless._
 import shapeless.labelled._
-import java.sql.{ Date, Timestamp }
 
 @annotation.implicitNotFound("""
   Type ${T} does not have a ParamEncoder defined in the library.
