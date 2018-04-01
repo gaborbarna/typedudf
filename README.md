@@ -19,7 +19,11 @@ https://issues.apache.org/jira/browse/SPARK-12823?page=com.atlassian.jira.plugin
 
 ## Installation
 
-TODO
+In build.sbt add to `libraryDependencies`:
+
+```scala
+"com.github.lesbroot" %% "typedudf" % "1.1.0"
+```
 
 ## Usage
 
@@ -36,3 +40,4 @@ df.withColumn("sum", fooUdf($"foo"))
 ## TODO
 - add more tests
 - benchmark
+- CI
