@@ -20,7 +20,7 @@ trait ParamEncoderImpl {
 
   def apply[T](implicit paramEncoder: ParamEncoder[T]): Aux[T, paramEncoder.In] = paramEncoder
 
-  def identityEncoder[T]: ParamEncoder.Aux[T, T] = new ParamEncoder[T] {
+  def identityEncoder[T]: Aux[T, T] = new ParamEncoder[T] {
     type In = T
     def apply(v: In) = v
   }
