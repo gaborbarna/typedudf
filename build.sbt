@@ -54,3 +54,5 @@ developers := List(
     url   = url("https://github.com/lesbroot")
   )
 )
+
+publishMavenStyle := true
