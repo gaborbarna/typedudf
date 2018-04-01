@@ -10,7 +10,7 @@ import shapeless.labelled._
   Type ${T} does not have a ParamEncoder defined in the library.
   You need to define one yourself.
   """)
-sealed trait ParamEncoder[T] {
+trait ParamEncoder[T] {
   type In
   def apply(v: In): T
 }
