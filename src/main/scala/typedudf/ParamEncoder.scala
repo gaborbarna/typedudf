@@ -15,7 +15,7 @@ sealed trait ParamEncoder[T] {
   def apply(v: In): T
 }
 
-object ParamEncoder {
+trait ParamEncoderImpl {
   type Aux[T, In0] = ParamEncoder[T] { type In = In0 }
 
   type IdAux[T] = ParamEncoder[T] { type In = T }
@@ -24,24 +24,24 @@ object ParamEncoder {
 
   def identityEncoder[T] = new ParamEncoder[T] {
     type In = T
-    def apply(v: T) = v
+    def apply(v: In) = v
   }
 
   implicit val hnilEncoder: Aux[HNil, Row] = new ParamEncoder[HNil] {
     type In = Row
-    def apply(row: Row): HNil = HNil
+    def apply(row: In): HNil = HNil
   }
 
   implicit def hconsEncoder[K <: Symbol, V, VIn, T <: HList](
     implicit
       w: Witness.Aux[K],
-      vEncoder: ParamEncoder[V],
+      vEncoder: ParamEncoder.Aux[V, VIn],
       tEncoder: ParamEncoder.Aux[T, Row]
   ): Aux[FieldType[K, V] :: T, Row] = new ParamEncoder[FieldType[K, V] :: T] {
     type In = Row
     def apply(row: In) = {
       val key = w.value
-      val value = row.getAs[vEncoder.In](key.name)
+      val value = row.getAs[VIn](key.name)
       field[K](vEncoder(value)) :: tEncoder(row)
     }
   }
@@ -93,3 +93,5 @@ object ParamEncoder {
     def apply(m: In): Map[K, V] = m.map { case (k, v) => (kEncoder(k), vEncoder(v)) }
   }
 }
+
+object ParamEncoder extends ParamEncoderImpl
