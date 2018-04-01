@@ -18,11 +18,9 @@ trait ParamEncoder[T] {
 trait ParamEncoderImpl {
   type Aux[T, In0] = ParamEncoder[T] { type In = In0 }
 
-  type IdAux[T] = ParamEncoder[T] { type In = T }
-
   def apply[T](implicit paramEncoder: ParamEncoder[T]): Aux[T, paramEncoder.In] = paramEncoder
 
-  def identityEncoder[T] = new ParamEncoder[T] {
+  def identityEncoder[T]: ParamEncoder.Aux[T, T] = new ParamEncoder[T] {
     type In = T
     def apply(v: In) = v
   }
@@ -55,19 +53,19 @@ trait ParamEncoderImpl {
     def apply(row: In) = lgen.from(encoder(row))
   }
 
-  implicit val binaryEncoder: IdAux[Array[Byte]] = identityEncoder[Array[Byte]]
-  implicit val booleanEncoder: IdAux[Boolean] = identityEncoder[Boolean]
-  implicit val byteEncoder: IdAux[Byte] = identityEncoder[Byte]
-  implicit val bigDecimalEncoder: IdAux[BigDecimal] = identityEncoder[BigDecimal]
-  implicit val doubleEncoder: IdAux[Double] = identityEncoder[Double]
-  implicit val floatEncoder: IdAux[Float] = identityEncoder[Float]
-  implicit val intEncoder: IdAux[Int] = identityEncoder[Int]
-  implicit val longEncoder: IdAux[Long] = identityEncoder[Long]
-  implicit val unitEncoder: IdAux[Unit] = identityEncoder[Unit]
-  implicit val shortEncoder: IdAux[Short] = identityEncoder[Short]
-  implicit val stringEncoder: IdAux[String] = identityEncoder[String]
-  implicit val timestampEncoder: IdAux[Timestamp] = identityEncoder[Timestamp]
-  implicit val dateEncoder: IdAux[Date] = identityEncoder[Date]
+  implicit def binaryEncoder = identityEncoder[Array[Byte]]
+  implicit def booleanEncoder = identityEncoder[Boolean]
+  implicit def byteEncoder = identityEncoder[Byte]
+  implicit def bigDecimalEncoder = identityEncoder[BigDecimal]
+  implicit def doubleEncoder = identityEncoder[Double]
+  implicit def floatEncoder = identityEncoder[Float]
+  implicit def intEncoder = identityEncoder[Int]
+  implicit def longEncoder = identityEncoder[Long]
+  implicit def unitEncoder = identityEncoder[Unit]
+  implicit def shortEncoder = identityEncoder[Short]
+  implicit def stringEncoder = identityEncoder[String]
+  implicit def timestampEncoder = identityEncoder[Timestamp]
+  implicit def dateEncoder = identityEncoder[Date]
 
   implicit def traversableLikeEncoder[V, VIn, C[_]](
     implicit

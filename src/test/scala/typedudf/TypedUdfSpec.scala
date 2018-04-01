@@ -28,6 +28,14 @@ class TypedUdfSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     val bar = ds.withColumn("bar", fooToBar($"foo")).select("bar.*").as[Bar].head
     bar shouldEqual Bar("asd", Some(3))
   }
+
+  "it" should "work with non-product types" in {
+    import spark.implicits._
+    val ds = spark.createDataset(Seq(1, 2)).toDF("x")
+    val plusOneUdf = TypedUdf((x: Int) => x + 1)
+    val result = ds.withColumn("y", plusOneUdf($"x")).select("y").as[Int].collect
+    result shouldEqual Seq(2, 3)
+  }
 }
 
 object TypedUdfSpec {
