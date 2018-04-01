@@ -22,7 +22,7 @@ https://issues.apache.org/jira/browse/SPARK-12823?page=com.atlassian.jira.plugin
 In build.sbt add to `libraryDependencies`:
 
 ```scala
-"com.github.lesbroot" %% "typedudf" % "1.1.0",
+"com.github.lesbroot" %% "typedudf" % "1.1.0"
 ```
 
 ## Usage
