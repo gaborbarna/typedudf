@@ -1,5 +1,13 @@
 # typedudf
 
+## Installation
+
+In build.sbt add to `libraryDependencies`:
+
+```scala
+"com.github.lesbroot" %% "typedudf" % "1.1.1"
+```
+
 ## Motivation
 
 Spark sql user defined function doesn't support deserializing struct types into Product types (case classes, tuples etc.), therefore you have to manually access the fields of a Row:
@@ -16,14 +24,6 @@ df.withColumn("sum", fooUdf($"foo"))
 ```
 
 https://issues.apache.org/jira/browse/SPARK-12823?page=com.atlassian.jira.plugin.system.issuetabpanels%3Aall-tabpanel
-
-## Installation
-
-In build.sbt add to `libraryDependencies`:
-
-```scala
-"com.github.lesbroot" %% "typedudf" % "1.1.1"
-```
 
 ## Usage
 
