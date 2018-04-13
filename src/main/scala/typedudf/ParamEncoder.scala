@@ -10,7 +10,7 @@ import shapeless.labelled._
   Type ${T} does not have a ParamEncoder defined in the library.
   You need to define one yourself.
   """)
-trait ParamEncoder[T] {
+trait ParamEncoder[T] extends Serializable {
   type In
   def apply(v: In): T
 }
@@ -25,12 +25,12 @@ trait ParamEncoderImpl {
     def apply(v: In) = v
   }
 
-  implicit val hnilEncoder: Aux[HNil, Row] = new ParamEncoder[HNil] {
+  implicit val hnilParamEncoder: Aux[HNil, Row] = new ParamEncoder[HNil] {
     type In = Row
     def apply(row: In): HNil = HNil
   }
 
-  implicit def hconsEncoder[K <: Symbol, V, VIn, T <: HList](
+  implicit def hconsParamEncoder[K <: Symbol, V, VIn, T <: HList](
     implicit
       w: Witness.Aux[K],
       vEncoder: ParamEncoder.Aux[V, VIn],
@@ -44,7 +44,7 @@ trait ParamEncoderImpl {
     }
   }
 
-  implicit def productEncoder[P, L <: HList](
+  implicit def productParamEncoder[P, L <: HList](
     implicit
       lgen: LabelledGeneric.Aux[P, L],
       encoder: ParamEncoder.Aux[L, Row]
@@ -53,21 +53,21 @@ trait ParamEncoderImpl {
     def apply(row: In) = lgen.from(encoder(row))
   }
 
-  implicit def binaryEncoder = identityEncoder[Array[Byte]]
-  implicit def booleanEncoder = identityEncoder[Boolean]
-  implicit def byteEncoder = identityEncoder[Byte]
-  implicit def bigDecimalEncoder = identityEncoder[BigDecimal]
-  implicit def doubleEncoder = identityEncoder[Double]
-  implicit def floatEncoder = identityEncoder[Float]
-  implicit def intEncoder = identityEncoder[Int]
-  implicit def longEncoder = identityEncoder[Long]
-  implicit def unitEncoder = identityEncoder[Unit]
-  implicit def shortEncoder = identityEncoder[Short]
-  implicit def stringEncoder = identityEncoder[String]
-  implicit def timestampEncoder = identityEncoder[Timestamp]
-  implicit def dateEncoder = identityEncoder[Date]
+  implicit def binaryParamEncoder = identityEncoder[Array[Byte]]
+  implicit def booleanParamEncoder = identityEncoder[Boolean]
+  implicit def byteParamEncoder = identityEncoder[Byte]
+  implicit def bigDecimalParamEncoder = identityEncoder[BigDecimal]
+  implicit def doubleParamEncoder = identityEncoder[Double]
+  implicit def floatParamEncoder = identityEncoder[Float]
+  implicit def intParamEncoder = identityEncoder[Int]
+  implicit def longParamEncoder = identityEncoder[Long]
+  implicit def unitParamEncoder = identityEncoder[Unit]
+  implicit def shortParamEncoder = identityEncoder[Short]
+  implicit def stringParamEncoder = identityEncoder[String]
+  implicit def timestampParamEncoder = identityEncoder[Timestamp]
+  implicit def dateParamEncoder = identityEncoder[Date]
 
-  implicit def traversableLikeEncoder[V, VIn, C[_]](
+  implicit def traversableLikeParamEncoder[V, VIn, C[_]](
     implicit
       encoder: ParamEncoder.Aux[V, VIn],
       is: IsTraversableLike[C[VIn]] { type A = VIn },
@@ -76,14 +76,14 @@ trait ParamEncoderImpl {
     def apply(s: In) = is.conversion(s).map(encoder.apply)
   }
 
-  implicit def optionEncoder[V, VIn](
+  implicit def optionParamEncoder[V, VIn](
     implicit
       encoder: ParamEncoder.Aux[V, VIn]): Aux[Option[V], VIn] = new ParamEncoder[Option[V]] {
     type In = VIn
     def apply(s: In): Option[V] = Option(encoder(s))
   }
 
-  implicit def mapEncoder[K, KIn, V, VIn](
+  implicit def mapParamEncoder[K, KIn, V, VIn](
     implicit
       kEncoder: ParamEncoder.Aux[K, KIn],
       vEncoder: ParamEncoder.Aux[V, VIn]): Aux[Map[K, V], Map[KIn, VIn]] = new ParamEncoder[Map[K, V]] {
