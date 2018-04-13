@@ -5,7 +5,7 @@
 In build.sbt add to `libraryDependencies`:
 
 ```scala
-"com.github.lesbroot" %% "typedudf" % "1.1.1"
+"com.github.lesbroot" %% "typedudf" % "1.1.2"
 ```
 
 ## Motivation
