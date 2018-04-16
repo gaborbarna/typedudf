@@ -33,14 +33,14 @@ trait ParamEncoderImpl {
   implicit def hconsParamEncoder[K <: Symbol, V, VIn, T <: HList](
     implicit
       w: Witness.Aux[K],
-      vEncoder: ParamEncoder.Aux[V, VIn],
+      vEncoder: Lazy[ParamEncoder.Aux[V, VIn]],
       tEncoder: ParamEncoder.Aux[T, Row]
   ): Aux[FieldType[K, V] :: T, Row] = new ParamEncoder[FieldType[K, V] :: T] {
     type In = Row
     def apply(row: In) = {
       val key = w.value
       val value = row.getAs[VIn](key.name)
-      field[K](vEncoder(value)) :: tEncoder(row)
+      field[K](vEncoder.value(value)) :: tEncoder(row)
     }
   }
 

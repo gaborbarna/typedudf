@@ -36,6 +36,14 @@ class TypedUdfSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     val result = ds.withColumn("y", plusOneUdf($"x")).select("y").as[Int].collect
     result shouldEqual Seq(2, 3)
   }
+
+  "it" should "work array type" in {
+    import spark.implicits._
+    val ds = spark.createDataset(Seq(Seq(1, 2), Seq(3, 4))).toDF("x")
+    val seqUdf = TypedUdf((x: Seq[Int]) => x.map(_ * 2))
+    val result = ds.withColumn("y", seqUdf($"x")).select("y").as[Seq[Int]].collect
+    result shouldEqual Seq(Seq(2, 4), Seq(6, 8))
+  }
 }
 
 object TypedUdfSpec {

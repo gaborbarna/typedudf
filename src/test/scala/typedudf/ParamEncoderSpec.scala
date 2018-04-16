@@ -16,4 +16,8 @@ class ParamEncoderSpec extends FlatSpec with Matchers {
     val row = new GenericRowWithSchema(Array(1, Set(2, 3)), schema)
     ParamEncoder[Foo].apply(row) shouldEqual Foo(1, Set(2, 3))
   }
+
+  "A ParamEncoder" should "encode deep nested product type" in {
+    ParamEncoder[(Int, (Int, (Int, Int)))]
+  }
 }
