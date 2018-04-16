@@ -44,13 +44,13 @@ trait ParamEncoderImpl {
     }
   }
 
-  implicit def productParamEncoder[P, L <: HList](
+  implicit def productParamEncoder[P <: Product, L <: HList](
     implicit
       lgen: LabelledGeneric.Aux[P, L],
-      encoder: ParamEncoder.Aux[L, Row]
+      encoder: Lazy[ParamEncoder.Aux[L, Row]]
   ): Aux[P, Row] = new ParamEncoder[P] {
     type In = Row
-    def apply(row: In) = lgen.from(encoder(row))
+    def apply(row: In) = lgen.from(encoder.value(row))
   }
 
   implicit def binaryParamEncoder = identityEncoder[Array[Byte]]

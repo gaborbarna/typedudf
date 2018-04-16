@@ -19,5 +19,6 @@ class ParamEncoderSpec extends FlatSpec with Matchers {
 
   "A ParamEncoder" should "encode deep nested product type" in {
     ParamEncoder[(Int, (Int, (Int, Int)))]
+    ParamEncoder[(Int, (Int, Int, Int))]
   }
 }
