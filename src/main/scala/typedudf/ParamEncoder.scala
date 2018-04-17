@@ -80,7 +80,7 @@ trait ParamEncoderImpl {
     implicit
       encoder: ParamEncoder.Aux[V, VIn]): Aux[Option[V], VIn] = new ParamEncoder[Option[V]] {
     type In = VIn
-    def apply(s: In): Option[V] = Option(encoder(s))
+    def apply(s: In): Option[V] = Option(s).map(encoder.apply)
   }
 
   implicit def mapParamEncoder[K, KIn, V, VIn](
