@@ -70,6 +70,7 @@ trait ParamEncoderImpl {
   implicit def traversableLikeParamEncoder[V, VIn, C[_]](
     implicit
       encoder: ParamEncoder.Aux[V, VIn],
+      neq: V =:!= Byte,
       is: IsTraversableLike[C[VIn]] { type A = VIn },
       bf: CanBuildFrom[C[VIn], V, C[V]]): Aux[C[V], C[VIn]] = new ParamEncoder[C[V]] {
     type In = C[VIn]

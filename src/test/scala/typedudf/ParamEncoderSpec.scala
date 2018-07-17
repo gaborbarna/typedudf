@@ -21,4 +21,8 @@ class ParamEncoderSpec extends FlatSpec with Matchers {
     ParamEncoder[(Int, (Int, (Int, Int)))]
     ParamEncoder[(Int, (Int, Int, Int))]
   }
+
+  "A ParamEncoder" should "encode Array" in {
+    ParamEncoder[Array[Byte]]
+  }
 }

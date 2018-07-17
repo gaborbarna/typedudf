@@ -1,5 +1,6 @@
 package typedudf
 
+import scala.collection.mutable.WrappedArray
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 import org.scalatest.{ BeforeAndAfterAll, FlatSpec, Matchers }
@@ -37,12 +38,28 @@ class TypedUdfSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     result shouldEqual Seq(2, 3)
   }
 
-  "it" should "work with array type" in {
+  "it" should "work with seq type" in {
     import spark.implicits._
     val ds = spark.createDataset(Seq(Seq(1, 2), Seq(3, 4))).toDF("x")
     val seqUdf = TypedUdf((x: Seq[Int]) => x.map(_ * 2))
     val result = ds.withColumn("y", seqUdf($"x")).select("y").as[Seq[Int]].collect
     result shouldEqual Seq(Seq(2, 4), Seq(6, 8))
+  }
+
+  "it" should "work with Array[Byte] type" in {
+    import spark.implicits._
+    val ds = spark.createDataset(Seq(Array(1, 2).map(_.toByte))).toDF("x")
+    val arrUdf = TypedUdf((x: Array[Byte]) => x.reverse)
+    val result = ds.withColumn("y", arrUdf($"x")).select("y").as[Array[Byte]].collect
+    result shouldEqual Array(Array(2, 1).map(_.toByte))
+  }
+
+  "it" should "work with WrappedArray type" in {
+    import spark.implicits._
+    val ds = spark.createDataset(Seq(Seq(1, 1, 2))).toDF("x")
+    val arrUdf = TypedUdf((x: WrappedArray[Int]) => x.distinct)
+    val result = ds.withColumn("y", arrUdf($"x")).select("y").as[Seq[Int]].collect
+    result shouldEqual Seq(Seq(1, 2))
   }
 
   "it" should "work with option type" in {
